@@ -592,7 +592,7 @@ public class SLInstrumentLegacyTest {
     @Test
     public void testRedoIO() throws Throwable {
         String code = "function main() {\n" +
-                        "  a = readln();\n" +
+                        "  a = getline();\n" +
                         "  return a;\n" +
                         "}\n";
         final Source ioWait = Source.newBuilder("sl", code, "testing").build();
@@ -647,7 +647,7 @@ public class SLInstrumentLegacyTest {
             env.getInstrumenter().attachExecutionEventListener(SourceSectionFilter.ANY, new ExecutionEventListener() {
                 @Override
                 public void onEnter(EventContext context, VirtualFrame frame) {
-                    if ("readln".equals(getSourceSectionCharacters(context.getInstrumentedSourceSection()))) {
+                    if ("getline".equals(getSourceSectionCharacters(context.getInstrumentedSourceSection()))) {
                         CompilerDirectives.transferToInterpreter();
                         // Interrupt the I/O
                         final Thread thread = Thread.currentThread();

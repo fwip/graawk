@@ -15,7 +15,7 @@ function doIt(a) {
   print("After hello assignment:");
   print(stacktrace());
   
-//  readln();
+//  getline();
 }
 
 function main() {
