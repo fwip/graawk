@@ -76,7 +76,7 @@ public class SLJavaInteropTest {
 
     @Test
     public void asFunction() throws Exception {
-        String scriptText = "function test() {\n" + "    println(\"Called!\");\n" + "}\n";
+        String scriptText = "function test() {\n" + "    print(\"Called!\");\n" + "}\n";
         context.eval("sl", scriptText);
         Value main = lookup("test");
         Runnable runnable = main.as(Runnable.class);
@@ -92,7 +92,7 @@ public class SLJavaInteropTest {
     @Test
     public void asFunctionWithArg() throws Exception {
         String scriptText = "function values(a, b) {\n" + //
-                        "  println(\"Called with \" + a + \" and \" + b);\n" + //
+                        "  print(\"Called with \" + a + \" and \" + b);\n" + //
                         "}\n"; //
         context.eval("sl", scriptText);
         Value fn = lookup("values");
@@ -118,7 +118,7 @@ public class SLJavaInteropTest {
     @Test
     public void asFunctionWithArr() throws Exception {
         String scriptText = "function values(a, b) {\n" + //
-                        "  println(\"Called with \" + a[0] + a[1] + \" and \" + b);\n" + //
+                        "  print(\"Called with \" + a[0] + a[1] + \" and \" + b);\n" + //
                         "}\n"; //
         context.eval("sl", scriptText);
         Value fn = lookup("values");
@@ -130,7 +130,7 @@ public class SLJavaInteropTest {
     @Test
     public void asFunctionWithVarArgs() throws Exception {
         String scriptText = "function values(a, b) {\n" + //
-                        "  println(\"Called with \" + a + \" and \" + b);\n" + //
+                        "  print(\"Called with \" + a + \" and \" + b);\n" + //
                         "}\n"; //
         context.eval("sl", scriptText);
         Value fn = lookup("values");
@@ -143,7 +143,7 @@ public class SLJavaInteropTest {
     @Test
     public void asFunctionWithArgVarArgs() throws Exception {
         String scriptText = "function values(a, b, c) {\n" + //
-                        "  println(\"Called with \" + a + \" and \" + b + c);\n" + //
+                        "  print(\"Called with \" + a + \" and \" + b + c);\n" + //
                         "}\n"; //
         context.eval("sl", scriptText);
         Value fn = lookup("values");

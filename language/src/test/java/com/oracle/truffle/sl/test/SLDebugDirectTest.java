@@ -110,7 +110,7 @@ public class SLDebugDirectTest {
 
     private static Source createFactorial() {
         return Source.newBuilder("sl", "function test() {\n" +
-                        "  res = fac(2);\n" + "  println(res);\n" +
+                        "  res = fac(2);\n" + "  print(res);\n" +
                         "  return res;\n" +
                         "}\n" +
                         "function fac(n) {\n" +
@@ -125,7 +125,7 @@ public class SLDebugDirectTest {
     private static Source createFactorialWithDebugger() {
         return Source.newBuilder("sl", "function test() {\n" +
                         "  res = fac(2);\n" +
-                        "  println(res);\n" +
+                        "  print(res);\n" +
                         "  return res;\n" +
                         "}\n" +
                         "function fac(n) {\n" +
@@ -249,7 +249,7 @@ public class SLDebugDirectTest {
         stepOver(1);
         assertLocation("test", 2, false, "fac(2)", "res", UNASSIGNED);
         stepOver(1);
-        assertLocation("test", 3, true, "println(res)", "res", "2");
+        assertLocation("test", 3, true, "print(res)", "res", "2");
         stepOut();
 
         Value value = context.getBindings("sl").getMember("test");

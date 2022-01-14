@@ -8,11 +8,11 @@ function null() {
 }
 
 function main() {  
-  println(null());  
-  println(null() == null());  
-  println(null() != null());  
-  println(null() == 42);  
-  println(null() != 42);  
-  println(null() == "42");  
-  println(null() != "42");  
+  print(null());  
+  print(null() == null());  
+  print(null() != null());  
+  print(null() == 42);  
+  print(null() != 42);  
+  print(null() == "42");  
+  print(null() != "42");  
 }  

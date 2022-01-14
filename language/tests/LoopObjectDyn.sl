@@ -17,5 +17,5 @@ function main() {
     loop(1000, new(), "prop");
     i = i + 1;
   }
-  println(loop(1000, new(), "prop"));  
+  print(loop(1000, new(), "prop"));  
 }  

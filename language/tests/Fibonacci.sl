@@ -20,7 +20,7 @@ function fib(num) {
 function main() {  
   i = 1;
   while (i <= 10) {
-    println(i + ": " + fib(i));
+    print(i + ": " + fib(i));
     i = i + 1;
   }
 }  

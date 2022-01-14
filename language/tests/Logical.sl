@@ -6,23 +6,23 @@
 function main() {
   t = 10 == 10; // true
   f = 10 != 10; // false
-  println(left(f) && right(f));
-  println(left(f) && right(t));
-  println(left(t) && right(f));
-  println(left(t) && right(t));
-  println("");
-  println(left(f) || right(f));
-  println(left(f) || right(t));
-  println(left(t) || right(f));
-  println(left(t) || right(t));
+  print(left(f) && right(f));
+  print(left(f) && right(t));
+  print(left(t) && right(f));
+  print(left(t) && right(t));
+  print("");
+  print(left(f) || right(f));
+  print(left(f) || right(t));
+  print(left(t) || right(f));
+  print(left(t) || right(t));
 }
 
 function left(x) {
-  println("left");
+  print("left");
   return x;
 }
 
 function right(x) {
-  println("right");
+  print("right");
   return x;
 }

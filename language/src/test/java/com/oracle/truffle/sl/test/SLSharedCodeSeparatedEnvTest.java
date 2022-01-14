@@ -97,7 +97,7 @@ public class SLSharedCodeSeparatedEnvTest {
 
         String sayHello =
             "function main() {\n" +
-            "  println(\"Ahoj\" + import(\"extra\"));" +
+            "  print(\"Ahoj\" + import(\"extra\"));" +
             "}";
         // @formatter:on
 
@@ -117,7 +117,7 @@ public class SLSharedCodeSeparatedEnvTest {
         assertNotNull("Stream capturing is ready", outConsumer);
 
         String sayHello = "function main() {\n" +
-                        "  println(\"Ahoj\" + import(\"extra\"));" +
+                        "  print(\"Ahoj\" + import(\"extra\"));" +
                         "}";
         // @formatter:on
 

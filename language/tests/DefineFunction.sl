@@ -4,7 +4,7 @@
  */
 
 function foo() {
-  println(test(40, 2));
+  print(test(40, 2));
 }
 
 function main() {

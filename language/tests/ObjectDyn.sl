@@ -6,19 +6,19 @@
 function main() {  
   obj1 = new();
   obj1["x"] = 42;
-  println(obj1["x"]);
+  print(obj1["x"]);
   
   obj2 = new();
   obj2["o"] = obj1;
-  println(obj2["o"]["x"]);
+  print(obj2["o"]["x"]);
   obj2["o"]["y"] = "why";
-  println(obj1["y"]);
+  print(obj1["y"]);
   
-  println(mkobj()["z"]);
+  print(mkobj()["z"]);
   
   obj3 = new();
   obj3["fn"] = mkobj;
-  println(obj3["fn"]()["z"]);
+  print(obj3["fn"]()["z"]);
 
   obj4 = new();
   write(obj4, "prop", 1);
@@ -35,11 +35,11 @@ function main() {
     write(obj5, "prop" + i, read(obj5, "prop" + (i - 1)) * 2);
     i = i + 1;
   }
-  println(obj5.prop2);
-  println(obj5.prop9);
+  print(obj5.prop2);
+  print(obj5.prop9);
 
   obj6 = new();
-  println(obj6["x"]);
+  print(obj6["x"]);
 }
 
 function mkobj() {

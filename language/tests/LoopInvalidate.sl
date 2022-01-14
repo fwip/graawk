@@ -22,5 +22,5 @@ function main() {
     i = i + 1;
   }
   add("a", "b");
-  println(loop(1000));  
+  print(loop(1000));  
 }  

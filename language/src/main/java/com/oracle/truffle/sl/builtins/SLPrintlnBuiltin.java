@@ -57,7 +57,7 @@ import com.oracle.truffle.sl.runtime.SLLanguageView;
  * unconditionally inline everything reachable from the println() method. This is done via the
  * {@link TruffleBoundary} annotations.
  */
-@NodeInfo(shortName = "println")
+@NodeInfo(shortName = "print")
 public abstract class SLPrintlnBuiltin extends SLBuiltinNode {
 
     @Specialization

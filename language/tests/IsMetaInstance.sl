@@ -4,14 +4,14 @@
  */
 
 function printTypes(type) {
-  println(isInstance(type, 42));
-  println(isInstance(type, 42000000000000000000000000000000000000000));
-  println(isInstance(type, "42"));
-  println(isInstance(type, 42 == 42));
-  println(isInstance(type, new()));
-  println(isInstance(type, null));
-  println(isInstance(type, null()));
-  println("");
+  print(isInstance(type, 42));
+  print(isInstance(type, 42000000000000000000000000000000000000000));
+  print(isInstance(type, "42"));
+  print(isInstance(type, 42 == 42));
+  print(isInstance(type, new()));
+  print(isInstance(type, null));
+  print(isInstance(type, null()));
+  print("");
 }
 
 function null() {

@@ -8,8 +8,8 @@ function main() {
   context.eval("sl", "function createObject() { return new(); }");
   context.eval("sl", "function getPrimitive() { return 42; }");
   innerBindings = context.getBindings("sl");
-  println(innerBindings.createObject());
-  println(innerBindings.getPrimitive());
+  print(innerBindings.createObject());
+  print(innerBindings.getPrimitive());
   context.close();
   
   // this is expected fail as

@@ -617,11 +617,11 @@ public class SLDebugTest {
                         "  a = 1;\n" +
                         "  if (a > 0) {\n" +
                         "    b = 10;\n" +
-                        "    println(b);\n" +
+                        "    print(b);\n" +
                         "  }\n" +
-                        "  println(b);\n" +
-                        "  println(a);\n" +
-                        "  println(\"END.\");\n" +
+                        "  print(b);\n" +
+                        "  print(a);\n" +
+                        "  print(\"END.\");\n" +
                         "}");
 
         try (DebuggerSession session = startSession()) {

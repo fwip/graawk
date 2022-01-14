@@ -109,7 +109,7 @@ public class SLInstrumentLegacyTest {
                         "  a = 1;\n" +          // 2
                         "  if (a > 0) {\n" +
                         "    b = 10;\n" +
-                        "    println(b);\n" +   // 5
+                        "    print(b);\n" +   // 5
                         "  }\n" +
                         "  if (a == 1) {\n" +
                         "    b = 20;\n" +
@@ -120,11 +120,11 @@ public class SLInstrumentLegacyTest {
                         "      b = 5;\n" +
                         "      c = 6;\n" +
                         "      d = 7;\n" +      // 15
-                        "      println(d);\n" +
+                        "      print(d);\n" +
                         "    }\n" +
                         "  }\n" +
-                        "  println(b);\n" +
-                        "  println(a);\n" +     // 20
+                        "  print(b);\n" +
+                        "  print(a);\n" +     // 20
                         "}\n" +
                         "function main() {\n" +
                         "  test(\"n_n\");\n" +
@@ -503,10 +503,10 @@ public class SLInstrumentLegacyTest {
     public void testOutput() throws IOException {
         String code = "function main() {\n" +
                         "  f = fac(5);\n" +
-                        "  println(f);\n" +
+                        "  print(f);\n" +
                         "}\n" +
                         "function fac(n) {\n" +
-                        "  println(n);\n" +
+                        "  print(n);\n" +
                         "  if (n <= 1) {\n" +
                         "    return 1;\n" + // break
                         "  }\n" +

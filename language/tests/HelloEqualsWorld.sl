@@ -4,16 +4,16 @@
  */
 
 function doIt(a) {
-  println("Initial stack trace:");
-  println(stacktrace());
+  print("Initial stack trace:");
+  print(stacktrace());
   
   hello = 123;
-  println("After 123 assignment:");
-  println(stacktrace());
+  print("After 123 assignment:");
+  print(stacktrace());
   
   helloEqualsWorld();
-  println("After hello assignment:");
-  println(stacktrace());
+  print("After hello assignment:");
+  print(stacktrace());
   
 //  readln();
 }

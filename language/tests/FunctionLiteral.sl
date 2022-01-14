@@ -12,7 +12,7 @@ function sub(a, b) {
 }
 
 function foo(f) {
-  println(f(40, 2));
+  print(f(40, 2));
 }
 
 function main() {

@@ -15,16 +15,16 @@ function f(a, b) {
 }
 
 function main() {  
-  println("s" + null());  
-  println("s" + null);  
-  println("s" + foo());  
-  println("s" + foo);
+  print("s" + null());  
+  print("s" + null);  
+  print("s" + foo());  
+  print("s" + foo);
     
-  println(null() + "s");  
-  println(null() + "s");  
-  println(foo() + "s");  
-  println(foo + "s");
+  print(null() + "s");  
+  print(null() + "s");  
+  print(foo() + "s");  
+  print(foo + "s");
 
-  println(f(2, 4));
-  println(f(2, "4"));
+  print(f(2, 4));
+  print(f(2, "4"));
 }  

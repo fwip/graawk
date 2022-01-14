@@ -23,5 +23,5 @@ function main() {
     loop(10000);
     i = i + 1;
   }
-  println(loop(10000));  
+  print(loop(10000));  
 }  

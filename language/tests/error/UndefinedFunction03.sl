@@ -8,23 +8,23 @@ function invoke(f) {
 }
 
 function f1() {
-  println("f1");
+  print("f1");
 }
 
 function f2() {
-  println("f2");
+  print("f2");
 }
 
 function f3() {
-  println("f3");
+  print("f3");
 }
 
 function f4() {
-  println("f4");
+  print("f4");
 }
 
 function f5() {
-  println("f5");
+  print("f5");
 }
 
 function main() {

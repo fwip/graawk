@@ -18,5 +18,5 @@ function main() {
     loop(1000);
     i = i + 1;
   }
-  println(loop(1000));  
+  print(loop(1000));  
 }  
