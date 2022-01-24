@@ -394,7 +394,7 @@ fragment HEX_DIGIT : [0-9] | [a-f] | [A-F];
 fragment OCT_DIGIT : [0-7];
 fragment BINARY_DIGIT : '0' | '1';
 fragment TAB : '\t';
-fragment STRING_CHAR : ~('"' | '\\' | '\r' | '\n');
+fragment STRING_CHAR : ~('"' | '\r' | '\n');
 
 fragment REGEX_BODY:
 	(
