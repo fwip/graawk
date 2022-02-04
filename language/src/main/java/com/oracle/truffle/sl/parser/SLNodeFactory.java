@@ -536,6 +536,17 @@ public class SLNodeFactory {
         return result;
     }
 
+    // public SLExpressionNode createRegexLiteral(Token literalToken) {
+    //     SLExpressionNode result;
+    //     String literal = literalToken.getText();
+
+    //     // Remove slashes around regex body
+    //     assert literal.length() >= 2 && literal.startsWith("\"") && literal.endsWith("\"");
+    //     literal = literal.substring(1, literal.length() - 1);
+    //     result = new SLRegexLiteralNode(literal.intern());
+    //     return result;
+    // }
+
     public SLExpressionNode createParenExpression(SLExpressionNode expressionNode, int start, int length) {
         if (expressionNode == null) {
             return null;

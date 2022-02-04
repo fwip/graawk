@@ -228,7 +228,9 @@ logic_factor                                    { $result = $logic_factor.result
 )*
 ;
 
+// TODO: Precedence: array membership, 'in'
 
+// TODO: Precedence: regex match
 logic_factor returns [SLExpressionNode result]
 :
 arithmetic                                      { $result = $arithmetic.result; }
@@ -238,6 +240,17 @@ arithmetic                                      { $result = $arithmetic.result; 
 )?
 ;
 
+// TODO: What precedence level are regexes at?
+/*
+regex_factor returns [SLExpressionNode result]
+:
+(
+    expression
+    op=('~' | '!~')
+    regex                                        { $result = factory.createBinary($op, $expression.result, $regex.result); }
+)
+;
+*/
 
 arithmetic returns [SLExpressionNode result]
 :
@@ -279,6 +292,21 @@ factor returns [SLExpressionNode result]
 )
 ;
 
+/*
+string returns [SLExpressionNode result]
+:
+(
+    expression                              { $result = factory.createStringLiteral($STRING_LITERAL, true); }
+    (
+        expression                          { $result = factory.createStringLiteral($result + $STRING_LITERAL, true); }
+    )+
+);
+*/
+
+regex returns [SLExpressionNode result]
+:
+REGEX_LITERAL { $result = factory.createRegexLiteral($REGEX_LITERAL); }
+;
 
 member_expression [SLExpressionNode r, SLExpressionNode assignmentReceiver, SLExpressionNode assignmentName] returns [SLExpressionNode result]
 :                                               { SLExpressionNode receiver = r;
@@ -342,7 +370,16 @@ fragment BINARY_DIGIT : '0' | '1';
 fragment TAB : '\t';
 fragment STRING_CHAR : ~('"' | '\\' | '\r' | '\n');
 
+/*
+fragment REGEX_BODY:
+	(
+        '\\\\'  // Escaped backslash
+		| '\\/' // Escaped forward-slash
+		| ~[/]  // anything else that isn't an (un-escaped) forward slash
+	)*;
+    */
+
 IDENTIFIER : LETTER (LETTER | DIGIT)*;
 STRING_LITERAL : '"' STRING_CHAR* '"';
 NUMERIC_LITERAL : '0' | NON_ZERO_DIGIT DIGIT*;
-
+// REGEX_LITERAL : '/' REGEX_BODY '/';
