@@ -60,6 +60,7 @@ import com.oracle.truffle.sl.nodes.SLExpressionNode;
 import com.oracle.truffle.sl.nodes.SLRootNode;
 import com.oracle.truffle.sl.nodes.SLStatementNode;
 import com.oracle.truffle.sl.parser.SLParseError;
+import com.oracle.truffle.sl.parser.SLNodeFactory;
 }
 
 @lexer::header
@@ -241,16 +242,14 @@ arithmetic                                      { $result = $arithmetic.result; 
 ;
 
 // TODO: What precedence level are regexes at?
-/*
-regex_factor returns [SLExpressionNode result]
-:
-(
-    expression
-    op=('~' | '!~')
-    regex                                        { $result = factory.createBinary($op, $expression.result, $regex.result); }
-)
-;
-*/
+// regex_factor returns [SLExpressionNode result]
+// :
+// factor                                           { $result = $factor.result; }
+// (
+//     op=('~' | '!~')
+//     regex                                        { $result = factory.createBinary($op, $result, $regex.result); }
+// )
+// ;
 
 arithmetic returns [SLExpressionNode result]
 :
@@ -266,7 +265,7 @@ term returns [SLExpressionNode result]
 :
 factor                                          { $result = $factor.result; }
 (
-    op=('*' | '/')
+    op=('*' | '/' | '~' | '!~')
     factor                                      { $result = factory.createBinary($op, $result, $factor.result); }
 )*
 ;
@@ -286,27 +285,18 @@ factor returns [SLExpressionNode result]
 |
     NUMERIC_LITERAL                             { $result = factory.createNumericLiteral($NUMERIC_LITERAL); }
 |
+    REGEX_LITERAL                               { $result = factory.createRegexLiteral($REGEX_LITERAL); }
+|
     s='('
     expr=expression
     e=')'                                       { $result = factory.createParenExpression($expr.result, $s.getStartIndex(), $e.getStopIndex() - $s.getStartIndex() + 1); }
 )
 ;
 
-/*
-string returns [SLExpressionNode result]
-:
-(
-    expression                              { $result = factory.createStringLiteral($STRING_LITERAL, true); }
-    (
-        expression                          { $result = factory.createStringLiteral($result + $STRING_LITERAL, true); }
-    )+
-);
-*/
-
-regex returns [SLExpressionNode result]
-:
-REGEX_LITERAL { $result = factory.createRegexLiteral($REGEX_LITERAL); }
-;
+//regex returns [SLExpressionNode result]
+//:
+//REGEX_LITERAL { $result = factory.createRegexLiteral($REGEX_LITERAL); }
+//;
 
 member_expression [SLExpressionNode r, SLExpressionNode assignmentReceiver, SLExpressionNode assignmentName] returns [SLExpressionNode result]
 :                                               { SLExpressionNode receiver = r;
@@ -370,16 +360,14 @@ fragment BINARY_DIGIT : '0' | '1';
 fragment TAB : '\t';
 fragment STRING_CHAR : ~('"' | '\\' | '\r' | '\n');
 
-/*
 fragment REGEX_BODY:
 	(
-        '\\\\'  // Escaped backslash
-		| '\\/' // Escaped forward-slash
-		| ~[/]  // anything else that isn't an (un-escaped) forward slash
+        //'\\\\'  // Escaped backslash
+		//| '\\/' // Escaped forward-slash
+		~('/' | '\r' | '\n' )  // anything else that isn't an (un-escaped) forward slash or a line break
 	)*;
-    */
 
 IDENTIFIER : LETTER (LETTER | DIGIT)*;
 STRING_LITERAL : '"' STRING_CHAR* '"';
 NUMERIC_LITERAL : '0' | NON_ZERO_DIGIT DIGIT*;
-// REGEX_LITERAL : '/' REGEX_BODY '/';
+REGEX_LITERAL : '/' REGEX_BODY '/';

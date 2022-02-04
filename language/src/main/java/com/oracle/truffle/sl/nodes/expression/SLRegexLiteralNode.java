@@ -40,26 +40,25 @@
  */
 package com.oracle.truffle.sl.nodes.expression;
 
-import java.util.regex.Pattern;
-
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import com.oracle.truffle.sl.nodes.SLExpressionNode;
+import com.oracle.truffle.sl.runtime.SLPattern;
 
 /**
  * Constant literal for a {@code regex} value.
  */
-@NodeInfo(shortName = "const")
+@NodeInfo(shortName = "regex")
 public final class SLRegexLiteralNode extends SLExpressionNode {
 
-    private final Pattern value;
+    private final SLPattern value;
 
     public SLRegexLiteralNode(String value) {
-        this.value = Pattern.compile(value);
+        this.value = new SLPattern(value);
     }
 
     @Override
-    public Object executeGeneric(VirtualFrame frame) {
+    public SLPattern executeGeneric(VirtualFrame frame) {
         return value;
     }
 }

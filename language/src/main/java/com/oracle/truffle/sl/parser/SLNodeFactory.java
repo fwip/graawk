@@ -84,6 +84,8 @@ import com.oracle.truffle.sl.nodes.expression.SLMulNodeGen;
 import com.oracle.truffle.sl.nodes.expression.SLParenExpressionNode;
 import com.oracle.truffle.sl.nodes.expression.SLReadPropertyNode;
 import com.oracle.truffle.sl.nodes.expression.SLReadPropertyNodeGen;
+import com.oracle.truffle.sl.nodes.expression.SLRegexLiteralNode;
+import com.oracle.truffle.sl.nodes.expression.SLRegexMatchNodeGen;
 import com.oracle.truffle.sl.nodes.expression.SLStringLiteralNode;
 import com.oracle.truffle.sl.nodes.expression.SLSubNodeGen;
 import com.oracle.truffle.sl.nodes.expression.SLWritePropertyNode;
@@ -249,7 +251,7 @@ public class SLNodeFactory {
      * @param debuggerToken The token containing the debugger node's info.
      * @return A SLDebuggerNode for the given token.
      */
-    SLStatementNode createDebugger(Token debuggerToken) {
+    public SLStatementNode createDebugger(Token debuggerToken) {
         final SLDebuggerNode debuggerNode = new SLDebuggerNode();
         srcFromToken(debuggerNode, debuggerToken);
         return debuggerNode;
@@ -394,6 +396,12 @@ public class SLNodeFactory {
             case "||":
                 result = new SLLogicalOrNode(leftUnboxed, rightUnboxed);
                 break;
+            case "~":
+                result = SLRegexMatchNodeGen.create(leftUnboxed, rightUnboxed);
+                break;
+            case "!~":
+                result = SLLogicalNotNodeGen.create(SLRegexMatchNodeGen.create(leftUnboxed, rightUnboxed));
+                break;
             default:
                 throw new RuntimeException("unexpected operation: " + opToken.getText());
         }
@@ -536,16 +544,17 @@ public class SLNodeFactory {
         return result;
     }
 
-    // public SLExpressionNode createRegexLiteral(Token literalToken) {
-    //     SLExpressionNode result;
-    //     String literal = literalToken.getText();
+    public SLExpressionNode createRegexLiteral(Token literalToken) {
+        String literal = literalToken.getText();
 
-    //     // Remove slashes around regex body
-    //     assert literal.length() >= 2 && literal.startsWith("\"") && literal.endsWith("\"");
-    //     literal = literal.substring(1, literal.length() - 1);
-    //     result = new SLRegexLiteralNode(literal.intern());
-    //     return result;
-    // }
+        // Remove slashes around regex body
+        assert literal.length() >= 2 && literal.startsWith("/") && literal.endsWith("/");
+        //literal = literal.substring(1, literal.length() - 1);
+        final SLRegexLiteralNode result = new SLRegexLiteralNode(literal.intern());
+        srcFromToken(result, literalToken);
+        result.addExpressionTag();
+        return result;
+    }
 
     public SLExpressionNode createParenExpression(SLExpressionNode expressionNode, int start, int length) {
         if (expressionNode == null) {
