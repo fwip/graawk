@@ -17,7 +17,7 @@ public abstract class SLRegexMatchNode extends SLBinaryNode {
     @Specialization
     @TruffleBoundary
     protected boolean match(String left, SLPattern right) {
-        return right.getValue().matcher(left).matches();
+        return right.getValue().matcher(left).find();
     }
 
     /**

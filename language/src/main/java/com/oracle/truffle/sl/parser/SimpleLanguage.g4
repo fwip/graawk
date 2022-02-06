@@ -362,8 +362,8 @@ fragment STRING_CHAR : ~('"' | '\\' | '\r' | '\n');
 
 fragment REGEX_BODY:
 	(
-        //'\\\\'  // Escaped backslash
-		//| '\\/' // Escaped forward-slash
+        '\\\\'  // Escaped backslash
+		| '\\/' // Escaped forward-slash
 		~('/' | '\r' | '\n' )  // anything else that isn't an (un-escaped) forward slash or a line break
 	)*;
 

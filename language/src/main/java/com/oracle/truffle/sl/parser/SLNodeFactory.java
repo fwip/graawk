@@ -549,7 +549,7 @@ public class SLNodeFactory {
 
         // Remove slashes around regex body
         assert literal.length() >= 2 && literal.startsWith("/") && literal.endsWith("/");
-        //literal = literal.substring(1, literal.length() - 1);
+        literal = literal.substring(1, literal.length() - 1);
         final SLRegexLiteralNode result = new SLRegexLiteralNode(literal.intern());
         srcFromToken(result, literalToken);
         result.addExpressionTag();
