@@ -110,20 +110,6 @@ public static Map<String, RootCallTarget> parseSL(SLLanguage language, Source so
     parser.factory = new SLNodeFactory(language, source);
     parser.source = source;
     parser.simplelanguage();
-    return parser.factory.getAllFunctions();
-}
-
-public static Map<String, RootCallTarget> parseSL2(SLLanguage language, Source source) {
-    SimpleLanguageLexer lexer = new SimpleLanguageLexer(CharStreams.fromString(source.getCharacters().toString()));
-    SimpleLanguageParser parser = new SimpleLanguageParser(new CommonTokenStream(lexer));
-    lexer.removeErrorListeners();
-    parser.removeErrorListeners();
-    BailoutErrorListener listener = new BailoutErrorListener(source);
-    lexer.addErrorListener(listener);
-    parser.addErrorListener(listener);
-    parser.factory = new SLNodeFactory(language, source);
-    parser.source = source;
-    parser.simplelanguage();
 
     Map<String, RootCallTarget> functions = parser.factory.getAllFunctions();
     RootCallTarget run_script = parser.factory.createScriptRoot();

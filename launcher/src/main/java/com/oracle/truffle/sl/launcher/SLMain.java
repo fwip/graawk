@@ -100,9 +100,6 @@ public final class SLMain {
 
         try {
             Value result = context.eval(source);
-            //for (String mem : context.getBindings(SL).getMemberKeys()) {
-                //out.println(mem + ": " + context.getBindings(SL).getMember(mem));
-            //}
             Value runscript = context.getBindings(SL).getMember("__RUNSCRIPT__");
             runscript.executeVoid();
 

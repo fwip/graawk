@@ -258,6 +258,12 @@ public class SLNodeFactory {
     public void addRule(SLRuleNode rule) {
         this.rules.add(rule);
     }
+    public void addBeginRule(SLActionNode rule) {
+        this.beginRules.add(rule);
+    }
+    public void addEndRule(SLActionNode rule) {
+        this.endRules.add(rule);
+    }
 
     public void startBlock() {
         lexicalScope = new LexicalScope(lexicalScope);

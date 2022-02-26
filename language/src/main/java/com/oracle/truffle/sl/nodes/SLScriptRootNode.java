@@ -111,7 +111,7 @@ public class SLScriptRootNode extends RootNode {
         assert SLContext.get(this) != null;
         //output.println("Setting up frame");
         // Set up our frame for BEGIN nodes
-        FrameSlot field_slot = frame.getFrameDescriptor().addFrameSlot("0");
+        FrameSlot line_slot = frame.getFrameDescriptor().addFrameSlot("0");
         FrameSlot nf_slot = frame.getFrameDescriptor().addFrameSlot("NF");
         FrameSlot nr_slot = frame.getFrameDescriptor().addFrameSlot("NR");
         //output.println("Running BEGIN rules");
@@ -136,7 +136,7 @@ public class SLScriptRootNode extends RootNode {
                 break;
             }
             String[] fields = nextLine.trim().split("\\s+");
-            frame.setObject(field_slot, fields);
+            frame.setObject(line_slot, nextLine);
             frame.setInt(nf_slot, fields.length);
             try {
                 frame.setLong(nr_slot, frame.getLong(nr_slot) + 1);

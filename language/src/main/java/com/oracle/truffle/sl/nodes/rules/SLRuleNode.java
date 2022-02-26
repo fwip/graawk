@@ -3,6 +3,7 @@ package com.oracle.truffle.sl.nodes.rules;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.NodeInfo;
 import com.oracle.truffle.api.nodes.UnexpectedResultException;
+import com.oracle.truffle.api.profiles.ConditionProfile;
 import com.oracle.truffle.sl.nodes.SLExpressionNode;
 
 /**
@@ -14,6 +15,8 @@ public final class SLRuleNode extends SLExpressionNode {
     @Child private SLPatternNode pattern;
     @Child private SLActionNode action;
 
+    private final ConditionProfile condition = ConditionProfile.createCountingProfile();
+
     public SLRuleNode(SLPatternNode pattern, SLActionNode action) {
         this.pattern = pattern;
         this.action = action;
@@ -22,7 +25,7 @@ public final class SLRuleNode extends SLExpressionNode {
     @Override
     public Object executeGeneric(VirtualFrame frame) {
         try {
-            if (pattern.executeBoolean(frame)) {
+            if (condition.profile(pattern.executeBoolean(frame))) {
                 action.executeVoid(frame);
             }
             return 1;

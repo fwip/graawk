@@ -304,7 +304,7 @@ public final class SLLanguage extends TruffleLanguage<SLContext> {
          * the functions with the SLContext happens lazily in SLEvalRootNode.
          */
         if (request.getArgumentNames().isEmpty()) {
-            functions = SimpleLanguageParser.parseSL2(this, source);
+            functions = SimpleLanguageParser.parseSL(this, source);
         } else {
             StringBuilder sb = new StringBuilder();
             sb.append("function main(");
@@ -319,7 +319,7 @@ public final class SLLanguage extends TruffleLanguage<SLContext> {
             sb.append(";}");
             String language = source.getLanguage() == null ? ID : source.getLanguage();
             Source decoratedSource = Source.newBuilder(language, sb.toString(), source.getName()).build();
-            functions = SimpleLanguageParser.parseSL2(this, decoratedSource);
+            functions = SimpleLanguageParser.parseSL(this, decoratedSource);
         }
 
         RootCallTarget main = functions.get("main");
