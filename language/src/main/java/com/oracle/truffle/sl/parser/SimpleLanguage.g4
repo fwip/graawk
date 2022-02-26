@@ -59,6 +59,9 @@ import com.oracle.truffle.sl.SLLanguage;
 import com.oracle.truffle.sl.nodes.SLExpressionNode;
 import com.oracle.truffle.sl.nodes.SLRootNode;
 import com.oracle.truffle.sl.nodes.SLStatementNode;
+import com.oracle.truffle.sl.nodes.rules.SLActionNode;
+import com.oracle.truffle.sl.nodes.rules.SLPatternNode;
+import com.oracle.truffle.sl.nodes.rules.SLRuleNode;
 import com.oracle.truffle.sl.parser.SLParseError;
 import com.oracle.truffle.sl.parser.SLNodeFactory;
 }
@@ -109,6 +112,24 @@ public static Map<String, RootCallTarget> parseSL(SLLanguage language, Source so
     parser.simplelanguage();
     return parser.factory.getAllFunctions();
 }
+
+public static Map<String, RootCallTarget> parseSL2(SLLanguage language, Source source) {
+    SimpleLanguageLexer lexer = new SimpleLanguageLexer(CharStreams.fromString(source.getCharacters().toString()));
+    SimpleLanguageParser parser = new SimpleLanguageParser(new CommonTokenStream(lexer));
+    lexer.removeErrorListeners();
+    parser.removeErrorListeners();
+    BailoutErrorListener listener = new BailoutErrorListener(source);
+    lexer.addErrorListener(listener);
+    parser.addErrorListener(listener);
+    parser.factory = new SLNodeFactory(language, source);
+    parser.source = source;
+    parser.simplelanguage();
+
+    Map<String, RootCallTarget> functions = parser.factory.getAllFunctions();
+    RootCallTarget run_script = parser.factory.createScriptRoot();
+    functions.put("__RUNSCRIPT__", run_script);
+    return functions;
+}
 }
 
 // parser
@@ -118,9 +139,16 @@ public static Map<String, RootCallTarget> parseSL(SLLanguage language, Source so
 
 simplelanguage
 :
-function function* EOF
+top_level top_level* EOF
 ;
 
+top_level
+:
+(
+    function
+|
+    rule_pair                                    { factory.addRule( $rule_pair.result ); }
+);
 
 function
 :
@@ -139,6 +167,28 @@ s='('
 body=block[false]                               { factory.finishFunction($body.result); }
 ;
 
+
+rule_pair returns [SLRuleNode result]:
+(
+    pattern action                              { $result = factory.createRuleNode($pattern.result, $action.result); }
+|
+//	pattern                                     { $result = factory.createPrintRuleNode($pattern.result); }
+//|
+	action                                      { $result = factory.createUnconditionalRuleNode($action.result); }
+);
+
+pattern returns [SLPatternNode result]:
+(
+//    'BEGIN'                                     { $result = factory.createBeginPatternNode(); }
+//|
+//    'END'                                       { $result = factory.createEndPatternNode(); }
+//|
+    expression                                  { $result = factory.createPatternNode($expression.result); }
+);
+
+action returns [SLActionNode result]:
+block[false]                                    { $result = factory.createActionNode($block.result); }
+;
 
 
 block [boolean inLoop] returns [SLStatementNode result]

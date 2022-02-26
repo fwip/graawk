@@ -82,7 +82,41 @@ public final class SLMain {
             source = Source.newBuilder(SL, new File(file)).build();
         }
 
-        System.exit(executeSource(source, System.in, System.out, options));
+        //System.exit(executeSource(source, System.in, System.out, options));
+        System.exit(executeScript(source, System.in, System.out, options));
+    }
+
+    private static int executeScript(Source source, InputStream in, PrintStream out, Map<String, String> options) {
+        Context context;
+        PrintStream err = System.err;
+
+        try {
+            context = Context.newBuilder(SL).in(in).out(out).options(options).build();
+        } catch (IllegalArgumentException e) {
+            err.println(e.getMessage());
+            return 1;
+        }
+        err.println("== running on " + context.getEngine());
+
+        try {
+            Value result = context.eval(source);
+            //for (String mem : context.getBindings(SL).getMemberKeys()) {
+                //out.println(mem + ": " + context.getBindings(SL).getMember(mem));
+            //}
+            Value runscript = context.getBindings(SL).getMember("__RUNSCRIPT__");
+            runscript.executeVoid();
+
+        } catch (PolyglotException ex) {
+            if (ex.isInternalError()) {
+                // for internal errors we print the full stack trace
+                ex.printStackTrace();
+            } else {
+                err.println(ex.getMessage());
+            }
+            return 1;
+
+        }
+        return 0;
     }
 
     private static int executeSource(Source source, InputStream in, PrintStream out, Map<String, String> options) {

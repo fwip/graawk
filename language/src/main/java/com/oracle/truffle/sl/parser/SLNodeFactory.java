@@ -59,6 +59,7 @@ import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.sl.SLLanguage;
 import com.oracle.truffle.sl.nodes.SLExpressionNode;
 import com.oracle.truffle.sl.nodes.SLRootNode;
+import com.oracle.truffle.sl.nodes.SLScriptRootNode;
 import com.oracle.truffle.sl.nodes.SLStatementNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLBlockNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLBreakNode;
@@ -95,6 +96,9 @@ import com.oracle.truffle.sl.nodes.local.SLReadLocalVariableNode;
 import com.oracle.truffle.sl.nodes.local.SLReadLocalVariableNodeGen;
 import com.oracle.truffle.sl.nodes.local.SLWriteLocalVariableNode;
 import com.oracle.truffle.sl.nodes.local.SLWriteLocalVariableNodeGen;
+import com.oracle.truffle.sl.nodes.rules.SLActionNode;
+import com.oracle.truffle.sl.nodes.rules.SLPatternNode;
+import com.oracle.truffle.sl.nodes.rules.SLRuleNode;
 import com.oracle.truffle.sl.nodes.util.SLUnboxNodeGen;
 
 /**
@@ -124,6 +128,9 @@ public class SLNodeFactory {
     /* State while parsing a source unit. */
     private final Source source;
     private final Map<String, RootCallTarget> allFunctions;
+    private final List<SLActionNode> beginRules;
+    private final List<SLRuleNode> rules;
+    private final List<SLActionNode> endRules;
 
     /* State while parsing a function. */
     private int functionStartPos;
@@ -141,10 +148,56 @@ public class SLNodeFactory {
         this.language = language;
         this.source = source;
         this.allFunctions = new HashMap<>();
+        this.beginRules = new ArrayList<>();
+        this.rules = new ArrayList<>();
+        this.endRules = new ArrayList<>();
     }
 
     public Map<String, RootCallTarget> getAllFunctions() {
+        // Create a fake function that runs all rules
+        // TODO: This feels like a hack!
+        Integer i = 0;
+        for (SLRuleNode rule : rules) {
+            i++;
+            String key = "rule_" + i.toString();
+            if (!allFunctions.containsKey(key)) {
+                SLRootNode rule_root = new SLRootNode(language, frameDescriptor, rule, source.createUnavailableSection(), key);
+                allFunctions.put(key, Truffle.getRuntime().createCallTarget(rule_root));
+            }
+        }
+        //if (!allFunctions.containsKey("RUN")) {
+        //    SLBlockNode run_rules = new SLBlockNode(rules.toArray(new SLStatementNode[rules.size()]));
+        //    // TODO: Add getline() call (how?)
+        //    SLWhileNode loop_node = new SLWhileNode(new SLLongLiteralNode(1), run_rules );
+
+        //    final SLRootNode rootNode = new SLRootNode(language, frameDescriptor, functionBodyNode, functionSrc, functionName);
+        //    allFunctions.put(functionName, Truffle.getRuntime().createCallTarget(rootNode));
+        //    
+
+        //}
         return allFunctions;
+    }
+
+    public List<RootCallTarget> getAllRules() {
+        List<RootCallTarget> out = new ArrayList<>();
+        for (SLRuleNode rule : this.rules) {
+        //    out.add(Truffle.getRuntime().createCallTarget(rule));
+        }
+        return out;
+    }
+
+    public RootCallTarget createScriptRoot() {
+        SLScriptRootNode root = new SLScriptRootNode(
+            language,
+            frameDescriptor,
+            beginRules.toArray(new SLActionNode[beginRules.size()]),
+            rules.toArray(new SLRuleNode[rules.size()]),
+            endRules.toArray(new SLActionNode[endRules.size()]),
+            null,
+            "run_rules"
+        );
+
+        return Truffle.getRuntime().createCallTarget(root);
     }
 
     public void startFunction(Token nameToken, Token bodyStartToken) {
@@ -200,6 +253,10 @@ public class SLNodeFactory {
         parameterCount = 0;
         frameDescriptor = null;
         lexicalScope = null;
+    }
+
+    public void addRule(SLRuleNode rule) {
+        this.rules.add(rule);
     }
 
     public void startBlock() {
@@ -280,6 +337,29 @@ public class SLNodeFactory {
         srcFromToken(continueNode, continueToken);
         return continueNode;
     }
+
+
+    public SLRuleNode createRuleNode(SLPatternNode pattern, SLActionNode action){
+        return new SLRuleNode(pattern, action);
+    }
+    public SLPatternNode createPatternNode(SLExpressionNode expr){
+        return new SLPatternNode(expr);
+    }
+    public SLActionNode createActionNode(SLStatementNode statements){
+        return new SLActionNode(statements);
+    }
+
+    public SLRuleNode createUnconditionalRuleNode(SLActionNode action) {
+        return new SLRuleNode(
+            new SLPatternNode( new SLLongLiteralNode(1) ),
+            action);
+    }
+    /* NYI
+    public SLRuleNode createPrintRuleNode(SLPatternNode pattern) {
+        //SLExpressionNode printNode = createCall(new SLPrintlnBuiltin(), [], 0);
+        return new SLRuleNode(pattern, new SLActionNode(printNode));
+    }
+    */
 
     /**
      * Returns an {@link SLWhileNode} for the given parameters.
