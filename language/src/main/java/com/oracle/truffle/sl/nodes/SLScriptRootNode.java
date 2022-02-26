@@ -73,9 +73,9 @@ import com.oracle.truffle.sl.runtime.SLContext;
 @NodeInfo(language = "SL", description = "The root of all SL execution trees")
 public class SLScriptRootNode extends RootNode {
     /** The function body that is executed, and specialized during execution. */
-    @Children private SLActionNode[] beginRules;
-    @Children private SLRuleNode[] rules;
-    @Children private SLActionNode[] endRules;
+    @Children final private SLActionNode[] beginRules;
+    @Children final private SLRuleNode[] rules;
+    @Children final private SLActionNode[] endRules;
 
     /** The name of the function, for printing purposes only. */
     private final String name;
@@ -160,7 +160,6 @@ public class SLScriptRootNode extends RootNode {
         }
         //output.println("done :)");
 
-        output.flush();
 
         return new Object();
     }
