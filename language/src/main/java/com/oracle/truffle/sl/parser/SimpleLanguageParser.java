@@ -1,4 +1,4 @@
-// Generated from language/src/main/java/com/oracle/truffle/sl/parser/SimpleLanguage.g4 by ANTLR 4.9.2
+// Generated from language/src/main/java/com/oracle/truffle/sl/parser/SimpleLanguage.g4 by ANTLR 4.7.1
 package com.oracle.truffle.sl.parser;
 
 // DO NOT MODIFY - generated from SimpleLanguage.g4 using "mx create-sl-parser"
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class SimpleLanguageParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.9.2", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.7.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -48,34 +48,25 @@ public class SimpleLanguageParser extends Parser {
 		RULE_while_statement = 8, RULE_if_statement = 9, RULE_return_statement = 10, 
 		RULE_expression = 11, RULE_logic_term = 12, RULE_logic_factor = 13, RULE_arithmetic = 14, 
 		RULE_term = 15, RULE_factor = 16, RULE_member_expression = 17;
-	private static String[] makeRuleNames() {
-		return new String[] {
-			"simplelanguage", "top_level", "function", "rule_pair", "pattern", "action", 
-			"block", "statement", "while_statement", "if_statement", "return_statement", 
-			"expression", "logic_term", "logic_factor", "arithmetic", "term", "factor", 
-			"member_expression"
-		};
-	}
-	public static final String[] ruleNames = makeRuleNames();
+	public static final String[] ruleNames = {
+		"simplelanguage", "top_level", "function", "rule_pair", "pattern", "action", 
+		"block", "statement", "while_statement", "if_statement", "return_statement", 
+		"expression", "logic_term", "logic_factor", "arithmetic", "term", "factor", 
+		"member_expression"
+	};
 
-	private static String[] makeLiteralNames() {
-		return new String[] {
-			null, "'function'", "'('", "','", "')'", "'{'", "'}'", "'break'", "';'", 
-			"'continue'", "'debugger'", "'while'", "'if'", "'else'", "'return'", 
-			"'||'", "'&&'", "'<'", "'<='", "'>'", "'>='", "'=='", "'!='", "'+'", 
-			"'-'", "'*'", "'/'", "'~'", "'!~'", "'='", "'.'", "'['", "']'"
-		};
-	}
-	private static final String[] _LITERAL_NAMES = makeLiteralNames();
-	private static String[] makeSymbolicNames() {
-		return new String[] {
-			null, null, null, null, null, null, null, null, null, null, null, null, 
-			null, null, null, null, null, null, null, null, null, null, null, null, 
-			null, null, null, null, null, null, null, null, null, "WS", "COMMENT", 
-			"LINE_COMMENT", "IDENTIFIER", "STRING_LITERAL", "NUMERIC_LITERAL", "REGEX_LITERAL"
-		};
-	}
-	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
+	private static final String[] _LITERAL_NAMES = {
+		null, "'function'", "'('", "','", "')'", "'{'", "'}'", "'break'", "';'", 
+		"'continue'", "'debugger'", "'while'", "'if'", "'else'", "'return'", "'||'", 
+		"'&&'", "'<'", "'<='", "'>'", "'>='", "'=='", "'!='", "'+'", "'-'", "'*'", 
+		"'/'", "'~'", "'!~'", "'='", "'.'", "'['", "']'"
+	};
+	private static final String[] _SYMBOLIC_NAMES = {
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, null, null, null, 
+		null, null, null, null, null, null, null, null, null, "WS", "COMMENT", 
+		"LINE_COMMENT", "IDENTIFIER", "STRING_LITERAL", "NUMERIC_LITERAL", "REGEX_LITERAL"
+	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
 	/**
@@ -170,7 +161,6 @@ public class SimpleLanguageParser extends Parser {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
-
 	public static class SimplelanguageContext extends ParserRuleContext {
 		public List<Top_levelContext> top_level() {
 			return getRuleContexts(Top_levelContext.class);
