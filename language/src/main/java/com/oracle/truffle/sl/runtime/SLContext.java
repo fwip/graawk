@@ -40,17 +40,18 @@
  */
 package com.oracle.truffle.sl.runtime;
 
-import static com.oracle.truffle.api.CompilerDirectives.shouldNotReachHere;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.graalvm.polyglot.Context;
+
 import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerDirectives.CompilationFinal;
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
+import static com.oracle.truffle.api.CompilerDirectives.shouldNotReachHere;
 import com.oracle.truffle.api.RootCallTarget;
 import com.oracle.truffle.api.TruffleLanguage;
 import com.oracle.truffle.api.TruffleLanguage.ContextReference;
@@ -88,7 +89,6 @@ import com.oracle.truffle.sl.builtins.SLRegisterShutdownHookBuiltinFactory;
 import com.oracle.truffle.sl.builtins.SLStackTraceBuiltinFactory;
 import com.oracle.truffle.sl.builtins.SLTypeOfBuiltinFactory;
 import com.oracle.truffle.sl.builtins.SLWrapPrimitiveBuiltinFactory;
-import org.graalvm.polyglot.Context;
 
 /**
  * The run-time state of SL during execution. The context is created by the {@link SLLanguage}. It
@@ -108,6 +108,8 @@ public final class SLContext {
     private final AllocationReporter allocationReporter;
     private final List<SLFunction> shutdownHooks = new ArrayList<>();
 
+    public final SLGlobalRegistry globalRegistry;
+
     public SLContext(SLLanguage language, TruffleLanguage.Env env, List<NodeFactory<? extends SLBuiltinNode>> externalBuiltins) {
         this.env = env;
         this.input = new BufferedReader(new InputStreamReader(env.in()));
@@ -115,6 +117,7 @@ public final class SLContext {
         this.language = language;
         this.allocationReporter = env.lookup(AllocationReporter.class);
         this.functionRegistry = new SLFunctionRegistry(language);
+        this.globalRegistry = new SLGlobalRegistry();
         installBuiltins();
         for (NodeFactory<? extends SLBuiltinNode> builtin : externalBuiltins) {
             installBuiltin(builtin);

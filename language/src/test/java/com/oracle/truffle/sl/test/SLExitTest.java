@@ -70,7 +70,7 @@ public class SLExitTest {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             try (Context context = Context.newBuilder().out(out).build()) {
                 context.eval("sl", "function onShutdown() {\n" +
-                                "  println(\"" + message + "\");\n" +
+                                "  print(\"" + message + "\");\n" +
                                 "}\n" +
                                 "\n" +
                                 "function main() {\n" +
@@ -92,7 +92,7 @@ public class SLExitTest {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             try (Context context = Context.newBuilder().out(out).build()) {
                 context.eval("sl", "function onShutdown() {\n" +
-                                "  println(\"" + message + "\");\n" +
+                                "  print(\"" + message + "\");\n" +
                                 "}\n" +
                                 "\n" +
                                 "function main() {\n" +
@@ -110,11 +110,11 @@ public class SLExitTest {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             try (Context context = Context.newBuilder().out(out).build()) {
                 context.eval("sl", "function onShutdown1() {\n" +
-                                "  println(\"" + message1 + "\");\n" +
+                                "  print(\"" + message1 + "\");\n" +
                                 "}\n" +
                                 "\n" +
                                 "function onShutdown2() {\n" +
-                                "  println(\"" + message2 + "\");\n" +
+                                "  print(\"" + message2 + "\");\n" +
                                 "}\n" +
                                 "\n" +
                                 "function main() {\n" +

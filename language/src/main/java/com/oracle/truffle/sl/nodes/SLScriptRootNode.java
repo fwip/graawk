@@ -41,15 +41,11 @@
 package com.oracle.truffle.sl.nodes;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.frame.FrameDescriptor;
-import com.oracle.truffle.api.frame.FrameSlot;
-import com.oracle.truffle.api.frame.FrameSlotTypeException;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.instrumentation.InstrumentableNode;
 import com.oracle.truffle.api.nodes.Node;
@@ -59,6 +55,8 @@ import com.oracle.truffle.api.nodes.NodeVisitor;
 import com.oracle.truffle.api.nodes.RootNode;
 import com.oracle.truffle.api.source.SourceSection;
 import com.oracle.truffle.sl.SLLanguage;
+import com.oracle.truffle.sl.builtins.SLReadlnBuiltin;
+import com.oracle.truffle.sl.builtins.SLReadlnBuiltinFactory;
 import com.oracle.truffle.sl.nodes.controlflow.SLBlockNode;
 import com.oracle.truffle.sl.nodes.controlflow.SLFunctionBodyNode;
 import com.oracle.truffle.sl.nodes.local.SLReadArgumentNode;
@@ -66,16 +64,18 @@ import com.oracle.truffle.sl.nodes.local.SLWriteLocalVariableNode;
 import com.oracle.truffle.sl.nodes.rules.SLActionNode;
 import com.oracle.truffle.sl.nodes.rules.SLRuleNode;
 import com.oracle.truffle.sl.runtime.SLContext;
+import com.oracle.truffle.sl.runtime.SLGlobalRegistry;
 
 /**
  * Runs the rules :)
  */
-@NodeInfo(language = "SL", description = "The root of all SL execution trees")
+@NodeInfo(language = "AWK", description = "The entry point for the awk execution")
 public class SLScriptRootNode extends RootNode {
     /** The function body that is executed, and specialized during execution. */
     @Children final private SLActionNode[] beginRules;
     @Children final private SLRuleNode[] rules;
     @Children final private SLActionNode[] endRules;
+    @Child private SLReadlnBuiltin readLineNode;
 
     /** The name of the function, for printing purposes only. */
     private final String name;
@@ -95,6 +95,8 @@ public class SLScriptRootNode extends RootNode {
 
         this.name = name;
         this.sourceSection = sourceSection;
+        SLExpressionNode[] empty = {};
+        this.readLineNode = SLReadlnBuiltinFactory.create(empty);
     }
 
     @Override
@@ -104,69 +106,52 @@ public class SLScriptRootNode extends RootNode {
 
     @Override
     public Object execute(VirtualFrame frame) {
-        PrintWriter output = SLContext.get(this).getOutput();
-
-        //output.println("Beginning execute...");
+        //PrintWriter output = SLContext.get(this).getOutput();
+        BufferedReader input = SLContext.get(this).getInput();
+        SLGlobalRegistry globals = SLContext.get(this).globalRegistry;
 
         assert SLContext.get(this) != null;
-        //output.println("Setting up frame");
         // Set up our frame for BEGIN nodes
-        FrameSlot line_slot = frame.getFrameDescriptor().addFrameSlot("0");
-        FrameSlot nf_slot = frame.getFrameDescriptor().addFrameSlot("NF");
-        FrameSlot nr_slot = frame.getFrameDescriptor().addFrameSlot("NR");
-        //output.println("Running BEGIN rules");
+        globals.setNr(0);
+        globals.setFnr(0);
+
+        // Run all BEGIN rules
         for (SLActionNode beginRule : beginRules) {
-            //output.println("running begin rule");
             beginRule.executeVoid(frame);
         }
 
         // For each line in the input, perform all normal rules
-        BufferedReader input = SLContext.get(this).getInput();
-        //output.println("entering main loop");
         while (true) {
-            //output.println("Updating the frame");
-            // Update the frame :)
-            String nextLine;
-            try {
-                nextLine = input.readLine();
-                if (nextLine == null) {
+            // Update the global context :)
+            //String nextLine = readLineNode.readln();
+            //try {
+                String nextLine = readLineNode.readln();
+                // TODO This sucks lol
+                if (nextLine.equals("")) {
                     break;
                 }
-            } catch (IOException ex) {
-                break;
-            }
-            String[] fields = nextLine.trim().split("\\s+");
-            frame.setObject(line_slot, nextLine);
-            frame.setInt(nf_slot, fields.length);
-            try {
-                frame.setLong(nr_slot, frame.getLong(nr_slot) + 1);
-            } catch (FrameSlotTypeException ex) {
-                // hmm.
-            }
+                //String nextLine = input.readLine();
+                globals.setNr(globals.getNr()+1);
+                globals.setFnr(globals.getFnr()+1);
+                globals.setCurrentLine(nextLine);
+            //} catch (IOException e) {
+                //break;
+            //}
 
-
-            //output.println("Running rules");
+            // TODO: Make sub-node and explode/unroll it?
             // Call every god damn rule in the book
             for (SLRuleNode rule : rules ) {
-                //output.println("Running rule");
                 rule.executeVoid(frame);
             }
         }
 
         // Run all END rules.
-        //output.println("Running END rules");
         for (SLActionNode endRule : endRules) {
             endRule.executeVoid(frame);
         }
-        //output.println("done :)");
-
 
         return new Object();
     }
-
-    //public SLExpressionNode getBodyNode() {
-        //return bodyNode;
-    //}
 
     @Override
     public String getName() {

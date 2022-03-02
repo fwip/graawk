@@ -40,7 +40,7 @@
 # SOFTWARE.
 #
 
-version=4.7.1
+version=4.9.2
 jarfile=antlr-${version}-complete.jar
 [[ -e "$jarfile" ]] || curl -O https://www.antlr.org/download/antlr-${version}-complete.jar
 java -cp "$jarfile" org.antlr.v4.Tool -package com.oracle.truffle.sl.parser -no-listener language/src/main/java/com/oracle/truffle/sl/parser/SimpleLanguage.g4

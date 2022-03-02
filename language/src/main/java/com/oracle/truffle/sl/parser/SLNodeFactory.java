@@ -162,15 +162,15 @@ public class SLNodeFactory {
     public Map<String, RootCallTarget> getAllFunctions() {
         // Create a fake function that runs all rules
         // TODO: This feels like a hack!
-        Integer i = 0;
-        for (SLRuleNode rule : rules) {
-            i++;
-            String key = "rule_" + i.toString();
-            if (!allFunctions.containsKey(key)) {
-                SLRootNode rule_root = new SLRootNode(language, frameDescriptor, rule, source.createUnavailableSection(), key);
-                allFunctions.put(key, Truffle.getRuntime().createCallTarget(rule_root));
-            }
-        }
+        // Integer i = 0;
+        // for (SLRuleNode rule : rules) {
+        //     i++;
+        //     String key = "rule_" + i.toString();
+        //     if (!allFunctions.containsKey(key)) {
+        //         SLRootNode rule_root = new SLRootNode(language, frameDescriptor, rule, source.createUnavailableSection(), key);
+        //         allFunctions.put(key, Truffle.getRuntime().createCallTarget(rule_root));
+        //     }
+        // }
         //if (!allFunctions.containsKey("RUN")) {
         //    SLBlockNode run_rules = new SLBlockNode(rules.toArray(new SLStatementNode[rules.size()]));
         //    // TODO: Add getline() call (how?)
@@ -187,15 +187,23 @@ public class SLNodeFactory {
     public List<RootCallTarget> getAllRules() {
         List<RootCallTarget> out = new ArrayList<>();
         for (SLRuleNode rule : this.rules) {
-        //    out.add(Truffle.getRuntime().createCallTarget(rule));
+        //    out.add(rule.getCallTarget());
         }
         return out;
     }
 
     public RootCallTarget createScriptRoot() {
+        FrameDescriptor.Builder builder = FrameDescriptor
+            .newBuilder();
+        // TODO: Should I be storing these somewhere...?
+        builder.addSlot(FrameSlotKind.Object, "0", null);
+        builder.addSlot(FrameSlotKind.Long, "NR", null);
+        builder.addSlot(FrameSlotKind.Long, "NF", null);
+        builder.addSlot(FrameSlotKind.Object, "fields", null);
+
         SLScriptRootNode root = new SLScriptRootNode(
             language,
-            frameDescriptor,
+            builder.build(),
             beginRules.toArray(new SLActionNode[beginRules.size()]),
             rules.toArray(new SLRuleNode[rules.size()]),
             endRules.toArray(new SLActionNode[endRules.size()]),
@@ -203,7 +211,7 @@ public class SLNodeFactory {
             "run_rules"
         );
 
-        return Truffle.getRuntime().createCallTarget(root);
+        return root.getCallTarget();
     }
 
     public void startFunction(Token nameToken, Token bodyStartToken) {
