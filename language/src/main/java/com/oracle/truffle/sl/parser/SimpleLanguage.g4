@@ -326,13 +326,17 @@ factor returns [SLExpressionNode result]
     s='('
     expr=expression
     e=')'                                       { $result = factory.createParenExpression($expr.result, $s.getStartIndex(), $e.getStopIndex() - $s.getStartIndex() + 1); }
+|
+    field                                       { $result = $field.result; }
 )
 ;
 
-//regex returns [SLExpressionNode result]
-//:
-//REGEX_LITERAL { $result = factory.createRegexLiteral($REGEX_LITERAL); }
-//;
+field returns [SLExpressionNode result]
+:
+(
+    s='$'
+    factor                                      { $result = factory.createFieldNode($factor.result, $s.getStartIndex()); }
+);
 
 member_expression [SLExpressionNode r, SLExpressionNode assignmentReceiver, SLExpressionNode assignmentName] returns [SLExpressionNode result]
 :                                               { SLExpressionNode receiver = r;
@@ -387,7 +391,7 @@ WS : [ \t\r\n\u000C]+ -> skip;
 COMMENT : '/*' .*? '*/' -> skip;
 LINE_COMMENT : '//' ~[\r\n]* -> skip;
 
-fragment LETTER : [A-Z] | [a-z] | '_' | '$';
+fragment LETTER : [A-Z] | [a-z] | '_';
 fragment NON_ZERO_DIGIT : [1-9];
 fragment DIGIT : [0-9];
 fragment HEX_DIGIT : [0-9] | [a-f] | [A-F];

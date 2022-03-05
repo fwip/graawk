@@ -71,6 +71,7 @@ import com.oracle.truffle.sl.nodes.expression.SLAddNodeGen;
 import com.oracle.truffle.sl.nodes.expression.SLBigIntegerLiteralNode;
 import com.oracle.truffle.sl.nodes.expression.SLDivNodeGen;
 import com.oracle.truffle.sl.nodes.expression.SLEqualNodeGen;
+import com.oracle.truffle.sl.nodes.expression.SLFieldNode;
 import com.oracle.truffle.sl.nodes.expression.SLFunctionLiteralNode;
 import com.oracle.truffle.sl.nodes.expression.SLInvokeNode;
 import com.oracle.truffle.sl.nodes.expression.SLLessOrEqualNodeGen;
@@ -616,6 +617,12 @@ public class SLNodeFactory {
         result.setSourceSection(nameNode.getSourceCharIndex(), nameNode.getSourceLength());
         result.addExpressionTag();
         return result;
+    }
+
+    public SLExpressionNode createFieldNode(SLExpressionNode valueNode, int sourceStart) {
+        SLFieldNode field = new SLFieldNode(valueNode);
+        field.setSourceSection(sourceStart, valueNode.getSourceEndIndex() - sourceStart + 1);
+        return field;
     }
 
     public SLExpressionNode createStringLiteral(Token literalToken, boolean removeQuotes) {
