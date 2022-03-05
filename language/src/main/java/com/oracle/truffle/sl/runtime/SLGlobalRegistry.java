@@ -17,7 +17,7 @@ public class SLGlobalRegistry {
 
     // All Awk builtin variables
     private long argc;
-    private String[] argv;
+    private ArrayList<String> argv;
     private String convfmt;
     private HashMap<String, String> environ;
     private String filename; // path?
@@ -43,7 +43,7 @@ public class SLGlobalRegistry {
 
     public SLGlobalRegistry() {
         this.argc = 0;
-        this.argv = new String[0];
+        this.argv = new ArrayList();
         this.convfmt = "%.6g";
         this.environ = new HashMap<>();
         this.filename = "";
@@ -68,7 +68,7 @@ public class SLGlobalRegistry {
     }
 
 
-    public String[] getArgv() {
+    public ArrayList<String> getArgv() {
         return this.argv;
     }
 
@@ -148,7 +148,7 @@ public class SLGlobalRegistry {
     public void setArgc(long argc) {
         this.argc = argc;
     }
-    public void setArgv(String[] argv) {
+    public void setArgv(ArrayList<String> argv) {
         this.argv = argv;
     }
     public void setConvfmt(String convfmt) {
