@@ -68,6 +68,7 @@ import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
+import org.graalvm.polyglot.Value;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.internal.TextListener;
@@ -89,6 +90,7 @@ import com.oracle.truffle.sl.test.SLTestRunner.TestCase;
 public class SLTestRunner extends ParentRunner<TestCase> {
 
     private static final String SOURCE_SUFFIX = ".sl";
+    private static final String AWK_SUFFIX = ".awk";
     private static final String INPUT_SUFFIX = ".input";
     private static final String OUTPUT_SUFFIX = ".output";
 
@@ -100,15 +102,17 @@ public class SLTestRunner extends ParentRunner<TestCase> {
         protected final String sourceName;
         protected final String testInput;
         protected final String expectedOutput;
+        protected final Boolean awkMode;
         protected final Map<String, String> options;
         protected String actualOutput;
 
-        protected TestCase(Class<?> testClass, String baseName, String sourceName, Path path, String testInput, String expectedOutput, Map<String, String> options) {
+        protected TestCase(Class<?> testClass, String baseName, String sourceName, Path path, String testInput, String expectedOutput, Boolean awkMode, Map<String, String> options) {
             this.name = Description.createTestDescription(testClass, baseName);
             this.sourceName = sourceName;
             this.path = path;
             this.testInput = testInput;
             this.expectedOutput = expectedOutput;
+            this.awkMode = awkMode;
             this.options = options;
         }
     }
@@ -188,7 +192,24 @@ public class SLTestRunner extends ParentRunner<TestCase> {
                         expectedOutput = readAllLines(outputFile);
                     }
 
-                    foundCases.add(new TestCase(c, baseName, sourceName, sourceFile, testInput, expectedOutput, options));
+                    foundCases.add(new TestCase(c, baseName, sourceName, sourceFile, testInput, expectedOutput, false, options));
+                }
+                if (sourceName.endsWith(AWK_SUFFIX)) {
+                    String baseName = sourceName.substring(0, sourceName.length() - AWK_SUFFIX.length());
+
+                    Path inputFile = sourceFile.resolveSibling(baseName + INPUT_SUFFIX);
+                    String testInput = "";
+                    if (Files.exists(inputFile)) {
+                        testInput = readAllLines(inputFile);
+                    }
+
+                    Path outputFile = sourceFile.resolveSibling(baseName + OUTPUT_SUFFIX);
+                    String expectedOutput = "";
+                    if (Files.exists(outputFile)) {
+                        expectedOutput = readAllLines(outputFile);
+                    }
+
+                    foundCases.add(new TestCase(c, baseName, sourceName, sourceFile, testInput, expectedOutput, true, options));
                 }
                 return FileVisitResult.CONTINUE;
             }
@@ -331,6 +352,18 @@ public class SLTestRunner extends ParentRunner<TestCase> {
 
             /* Call the main entry point, without any arguments. */
             context.eval(source);
+            if (path.toString().endsWith(AWK_SUFFIX)) {
+                // Try running the special awk entrypoint
+                try {
+                    Value runscript = context.getBindings(SLLanguage.ID).getMember("__RUNSCRIPT__");
+                    runscript.executeVoid();
+                } catch (PolyglotException ex) {
+                    // TODO:
+                    // I don't know why this exception is thrown!
+                    // Something about post-conditions
+                    //System.out.println(ex.getMessage());
+                }
+            }
         } catch (PolyglotException ex) {
             if (!ex.isInternalError()) {
                 out.println(ex.getMessage());

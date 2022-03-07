@@ -201,11 +201,11 @@ public class SLGlobalRegistry {
 
     private void regenerateFields() {
         // This is actually a little tricky. 
-        // We split by the field separator, but multiples
+        // We split by the field separator, but multiple separators are collapsed
         String[] fieldarray = currentLine.split(this.fs + "+");
         this.fields = new ArrayList(Arrays.asList(fieldarray));
         this.fieldsStale = false;
-        this.setNf(nf);
+        this.setNf(this.fields.size());
     }
 
     public String getCurrentLine() {

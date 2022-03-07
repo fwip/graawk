@@ -42,6 +42,7 @@ package com.oracle.truffle.sl.parser;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +91,7 @@ import com.oracle.truffle.sl.nodes.expression.SLStringLiteralNode;
 import com.oracle.truffle.sl.nodes.expression.SLSubNodeGen;
 import com.oracle.truffle.sl.nodes.expression.SLWritePropertyNode;
 import com.oracle.truffle.sl.nodes.expression.SLWritePropertyNodeGen;
+import com.oracle.truffle.sl.nodes.global.SLReadGlobalNode;
 import com.oracle.truffle.sl.nodes.local.SLReadArgumentNode;
 import com.oracle.truffle.sl.nodes.local.SLReadLocalVariableNode;
 import com.oracle.truffle.sl.nodes.local.SLReadLocalVariableNodeGen;
@@ -606,13 +608,20 @@ public class SLNodeFactory {
 
         String name = ((SLStringLiteralNode) nameNode).executeGeneric(null);
         final SLExpressionNode result;
-        final Integer frameSlot = lexicalScope.find(name);
-        if (frameSlot != null) {
-            /* Read of a local variable. */
-            result = SLReadLocalVariableNodeGen.create(frameSlot);
+
+        List<String> BUILTIN_VARS = Arrays.asList( "ARGC", "ARGV", "CONVFMT", "ENVIRON", "FILENAME", "FNR", "FS", "NF", "NR", "OFMT", "OFS", "ORS", "RLENGTH", "RS", "RSTART", "SUBSEP");
+        if (BUILTIN_VARS.contains(name)) {
+            // Do thing
+            result = new SLReadGlobalNode(name);
         } else {
-            /* Read of a global name. In our language, the only global names are functions. */
-            result = new SLFunctionLiteralNode(name);
+            final Integer frameSlot = lexicalScope.find(name);
+            if (frameSlot != null) {
+                /* Read of a local variable. */
+                result = SLReadLocalVariableNodeGen.create(frameSlot);
+            } else {
+                /* Read of a global name. In our language, the only global names are functions. */
+                result = new SLFunctionLiteralNode(name);
+            }
         }
         result.setSourceSection(nameNode.getSourceCharIndex(), nameNode.getSourceLength());
         result.addExpressionTag();
