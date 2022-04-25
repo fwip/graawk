@@ -7,11 +7,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.oracle.truffle.api.source.Source;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.NoViableAltException;
+import org.antlr.v4.runtime.Parser;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.RuntimeMetaData;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.Vocabulary;
+import org.antlr.v4.runtime.VocabularyImpl;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.ParserATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
 import com.oracle.truffle.api.RootCallTarget;
+import com.oracle.truffle.api.source.Source;
+import com.oracle.truffle.api.strings.TruffleString;
 import com.oracle.truffle.sl.SLLanguage;
 import com.oracle.truffle.sl.nodes.SLExpressionNode;
-import com.oracle.truffle.sl.nodes.SLRootNode;
 import com.oracle.truffle.sl.nodes.SLStatementNode;
 import com.oracle.truffle.sl.nodes.rules.SLActionNode;
 import com.oracle.truffle.sl.nodes.rules.SLPatternNode;
@@ -150,7 +170,7 @@ public class SimpleLanguageParser extends Parser {
 	    throw new SLParseError(source, line, col, length, String.format("Error(s) parsing script:%n") + location + message);
 	}
 
-	public static Map<String, RootCallTarget> parseSL(SLLanguage language, Source source) {
+	public static Map<TruffleString, RootCallTarget> parseSL(SLLanguage language, Source source) {
 	    SimpleLanguageLexer lexer = new SimpleLanguageLexer(CharStreams.fromString(source.getCharacters().toString()));
 	    SimpleLanguageParser parser = new SimpleLanguageParser(new CommonTokenStream(lexer));
 	    lexer.removeErrorListeners();
