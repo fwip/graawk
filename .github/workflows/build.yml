@@ -24,6 +24,10 @@ jobs:
           native-image HelloWorld
           ./helloworld
       
+      - name: Build with maven
+        run: |
+          mvn package
+      
 #      - name: Upload binary
 #        uses: actions/upload-artifact@v2
 #        with:
