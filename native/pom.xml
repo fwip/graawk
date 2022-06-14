@@ -48,6 +48,30 @@
   </parent>
   <artifactId>simplelanguage-graalvm-native</artifactId>
   <packaging>pom</packaging>
+  <profiles>
+    <profile>
+      <id>Windows</id>
+      <activation>
+        <os>
+          <family>Windows</family>
+        </os>
+      </activation>
+      <properties>
+        <script.extension>.bat</script.extension>
+      </properties>
+    </profile>
+    <profile>
+      <id>unix</id>
+      <activation>
+        <os>
+          <family>unix</family>
+        </os>
+      </activation>
+      <properties>
+        <script.extension>.sh</script.extension>
+      </properties>
+    </profile>
+  </profiles>
   <build>
     <plugins>
       <plugin>
@@ -61,7 +85,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${basedir}/make_native.sh</executable>
+              <executable>${basedir}/make_native${script.extension}</executable>
             </configuration>
           </execution>
           <execution>
@@ -71,7 +95,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${basedir}/clean_native.sh</executable>
+              <executable>${basedir}/clean_native${script.extension}</executable>
             </configuration>
           </execution>
         </executions>
