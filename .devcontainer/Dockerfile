@@ -8,5 +8,7 @@ RUN cd /tmp \
   && cp -lr  apache-maven-$MAVEN_VERSION/* /usr/local/ \
   && rm -rf apache-maven-$MAVEN_VERSION maven.tar.gz
 
+RUN gu install native-image
+
 RUN adduser vscode
 USER vscode
