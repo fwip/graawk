@@ -82,7 +82,7 @@ Disclaimer: I'm not interested in PRs or co-development at this early stage. The
 
 That said, here are some instructions to develop or "install" the software:
 
-1) Install GraalVM, version 22. (Higher versions may work.)
+1) Install GraalVM, version 22.0.0.2 (22.1 is not yet supported)
 2) Install the necessary GraalVM plugins, like `native-image`.
 3) Install Maven.
 4) Run `mvn package`
